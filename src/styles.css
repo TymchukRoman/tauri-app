@@ -125,7 +125,16 @@ header {
 
 }
 
-/* .MuiDataGrid-columnHeaders>div {
-  background: none;
-  background-color: transparent
-} */
+.custom-input {
+  width: 500px;
+  padding: 10px;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}

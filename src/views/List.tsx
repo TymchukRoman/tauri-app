@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { invokeLoad } from "../api";
+import { getCosts } from "../api";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 interface Cost {
@@ -14,7 +14,7 @@ const List: React.FC = () => {
     const [costs, setCosts] = useState<Cost[]>([]);
 
     useEffect(() => {
-        invokeLoad()
+        getCosts()
             .then((response) => {
                 const list = JSON.parse(response);
                 console.log(list);

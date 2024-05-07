@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { invokeLoad, invokeSave } from "../api";
+import { getCosts, setCosts as invokeSetCosts } from "../api";
 import { v4 as uuidv4 } from 'uuid';
 
 interface Cost {
@@ -15,7 +15,7 @@ const New: React.FC = () => {
     const [costs, setCosts] = useState<any[]>([]);
 
     useEffect(() => {
-        invokeLoad()
+        getCosts()
             .then((response) => {
                 const list = JSON.parse(response);
                 console.log(list);
@@ -23,7 +23,6 @@ const New: React.FC = () => {
             })
             .catch((error) => console.error(error))
     }, [])
-
 
     const titleRef = useRef<HTMLInputElement>(null);
     const amountRef = useRef<HTMLInputElement>(null);
@@ -42,25 +41,19 @@ const New: React.FC = () => {
             timestamp: (new Date()).getTime()
         }
 
-        await invokeSave({ costs: [...costs, newCost] });
+        await invokeSetCosts({ costs: [...costs, newCost] });
     }
 
     return (
         <div className="container">
             <h1>Create new item</h1>
-
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    save();
-                }}
-            >
+            <form onSubmit={(e) => { e.preventDefault(); save(); }}                >
                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                    <input ref={titleRef} placeholder="title" />
-                    <input ref={amountRef} placeholder="amount" />
-                    <input ref={typeRef} placeholder="type" />
+                    <input className="custom-input" ref={titleRef} placeholder="title" />
+                    <input className="custom-input" ref={amountRef} placeholder="amount" />
+                    <input className="custom-input" ref={typeRef} placeholder="type" />
                 </div>
-                <button type="submit" style={{ marginTop: "10px" }}>Save</button>
+                <button type="submit" style={{ marginTop: "10px", width: "500px" }}>Save</button>
             </form>
         </div>
     );

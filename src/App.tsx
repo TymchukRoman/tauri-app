@@ -1,7 +1,8 @@
 import "./App.css";
-import { Link, Route } from "wouter";
+import { Link, Route, Switch } from "wouter";
 import New from "./views/New";
 import List from "./views/List";
+import Settings from "./views/Settings";
 
 const Header: React.FC = () => {
   return <header>
@@ -11,15 +12,20 @@ const Header: React.FC = () => {
     <Link className="sub-button" href="/costs">
       <button className="link">Costs</button>
     </Link>
+    <Link className="sub-button" href="/settings">
+      <button className="link">Settings</button>
+    </Link>
   </header>
 }
 
 function App() {
   return <div>
     <Header />
-
-    <Route path="/new" component={New} />
-    <Route path="/costs" component={List} />
+    <Switch>
+      <Route path="/costs" component={List} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/*" component={New} />
+    </Switch>
   </div>
 }
 
