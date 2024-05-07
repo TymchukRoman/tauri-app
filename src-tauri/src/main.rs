@@ -7,17 +7,25 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+const PATH: &str = "TauriApp";
+
 #[tauri::command]
 fn save_data(file_path: String, data: String) -> Result<(), String> {
     let app_dir = tauri::api::path::data_dir().ok_or("Could not find the data directory")?;
-    let file_path = app_dir.join(file_path);
+    let file_path = app_dir.join(PATH).join(file_path);
+
+    if let Some(parent) = file_path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+
+    println!("{}", file_path.display());
     std::fs::write(file_path, data).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
 fn load_data(file_path: String) -> Result<String, String> {
     let app_dir = tauri::api::path::data_dir().ok_or("Could not find the data directory")?;
-    let file_path = app_dir.join(file_path);
+    let file_path = app_dir.join(PATH).join(file_path);
     std::fs::read_to_string(file_path).map_err(|e| e.to_string())
 }
 
