@@ -1,6 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { getCosts, setCosts as invokeSetCosts } from "../api";
-import { v4 as uuidv4 } from 'uuid';
+import React, { useRef } from "react";
+import { invSetCosts } from "../api";
+import { v4 as uuidv4 } from "uuid";
+import { connect } from "react-redux";
+import { setCosts, setGlobal } from "../store";
+import { CProps } from "../App";
+import dayjs from "dayjs";
 
 interface Cost {
     id: string;
@@ -10,28 +14,15 @@ interface Cost {
     timestamp: number;
 }
 
-const New: React.FC = () => {
-
-    const [costs, setCosts] = useState<any[]>([]);
-
-    useEffect(() => {
-        getCosts()
-            .then((response) => {
-                const list = JSON.parse(response);
-                console.log(list);
-                setCosts(list.costs);
-            })
-            .catch((error) => console.error(error))
-    }, [])
-
+const New: React.FC<CProps> = ({ costs, setCosts }) => {
     const titleRef = useRef<HTMLInputElement>(null);
     const amountRef = useRef<HTMLInputElement>(null);
-    const typeRef = useRef<HTMLInputElement>(null)
+    const typeRef = useRef<HTMLInputElement>(null);
 
     async function save() {
-        const titleValue = titleRef?.current?.value || "New cost";
+        const titleValue = titleRef?.current?.value || `New cost (${dayjs().format("DD/MM/YYYY hh:mm")})`;
         const amountValue = Number(amountRef?.current?.value) || 0;
-        const typeValue = typeRef?.current?.value || "default";
+        const typeValue = typeRef?.current?.value || "";
 
         const newCost: Cost = {
             id: uuidv4(),
@@ -39,9 +30,16 @@ const New: React.FC = () => {
             amount: amountValue,
             type: typeValue,
             timestamp: (new Date()).getTime()
-        }
+        };
 
-        await invokeSetCosts({ costs: [...costs, newCost] });
+        await invSetCosts({ costs: [...costs, newCost] }).then(() => {
+            setCosts([...costs, newCost]);
+            if (titleRef.current && amountRef.current && typeRef.current) {
+                titleRef.current.value = "";
+                amountRef.current.value = "";
+                typeRef.current.value = "";
+            }
+        });
     }
 
     return (
@@ -50,13 +48,18 @@ const New: React.FC = () => {
             <form onSubmit={(e) => { e.preventDefault(); save(); }}                >
                 <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
                     <input className="custom-input" ref={titleRef} placeholder="title" />
-                    <input className="custom-input" ref={amountRef} placeholder="amount" />
+                    <input className="custom-input" ref={amountRef} placeholder="amount" type="number" />
                     <input className="custom-input" ref={typeRef} placeholder="type" />
                 </div>
                 <button type="submit" style={{ marginTop: "10px", width: "500px" }}>Save</button>
             </form>
         </div>
     );
-}
+};
 
-export default New;
+const mapStateToProps = (state: any) => ({
+    global: state.global,
+    costs: state.costs
+});
+
+export default connect(mapStateToProps, { setCosts, setGlobal })(New);
