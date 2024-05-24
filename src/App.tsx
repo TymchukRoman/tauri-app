@@ -9,6 +9,8 @@ import { setCosts, setGlobal } from "./store";
 import { useEffect } from "react";
 import { invGetCosts, invGetGlobal } from "./api";
 import GetStarted from "./views/GetStarted";
+import Home from "./views/Home";
+import { CProps } from "./types";
 
 const darkTheme = createTheme({
     palette: {
@@ -17,6 +19,9 @@ const darkTheme = createTheme({
 });
 
 const Header: React.FC = () => <header>
+    <Link className="sub-button" href="/home">
+        <button className="link">Home</button>
+    </Link>
     <Link className="sub-button" href="/new">
         <button className="link">New</button>
     </Link>
@@ -27,13 +32,6 @@ const Header: React.FC = () => <header>
         <button className="link">Settings</button>
     </Link>
 </header>;
-
-export interface CProps {
-    readonly costs: any[];
-    readonly global: Record<string, any>;
-    readonly setCosts: (costs: any[]) => void;
-    readonly setGlobal: (global: Record<string, any>) => void;
-}
 
 class Loader {
     globalLoaded: boolean;
@@ -89,7 +87,9 @@ const App: React.FC<CProps> = ({ global, setCosts, setGlobal }) => {
             {/* @ts-ignore */}
             <Route path="/settings" component={Settings} />
             {/* @ts-ignore */}
-            <Route path="/*" component={New} />
+            <Route path="/new" component={New} />
+            {/* @ts-ignore */}
+            <Route path="/*" component={Home} />
         </Switch>
     </ThemeProvider>;
 };

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { invSetGlobal } from "../api";
 import CurrencyList from "currency-list";
-import { CProps } from "../App";
 import { connect } from "react-redux";
 import { setCosts, setGlobal } from "../store";
+import { CProps } from "../types";
 
 const allCurrencies = CurrencyList.getAll("en_US");
 const currencies: any[] = Object.keys(allCurrencies).map((key: any) => {

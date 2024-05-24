@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { connect } from "react-redux";
 import { setCosts, setGlobal } from "../store";
-import { CProps } from "../App";
 import { invSetGlobal } from "../api";
+import { CProps } from "../types";
 
 const GetStarted: React.FC<CProps> = ({ global, setGlobal }) => {
 

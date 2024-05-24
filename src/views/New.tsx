@@ -3,16 +3,8 @@ import { invSetCosts } from "../api";
 import { v4 as uuidv4 } from "uuid";
 import { connect } from "react-redux";
 import { setCosts, setGlobal } from "../store";
-import { CProps } from "../App";
 import dayjs from "dayjs";
-
-interface Cost {
-    id: string;
-    title: string;
-    amount: number;
-    type: string;
-    timestamp: number;
-}
+import { CProps, Cost } from "../types";
 
 const New: React.FC<CProps> = ({ costs, setCosts }) => {
     const titleRef = useRef<HTMLInputElement>(null);
@@ -29,7 +21,8 @@ const New: React.FC<CProps> = ({ costs, setCosts }) => {
             title: titleValue,
             amount: amountValue,
             type: typeValue,
-            timestamp: (new Date()).getTime()
+            timestamp: (new Date()).getTime(),
+            positive: false
         };
 
         await invSetCosts({ costs: [...costs, newCost] }).then(() => {

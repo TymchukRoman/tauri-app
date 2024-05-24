@@ -4,23 +4,26 @@ import dayjs from "dayjs";
 import CurrencyList from "currency-list";
 import { connect } from "react-redux";
 import { setCosts, setGlobal } from "../store";
-import { CProps } from "../App";
+import { CProps } from "../types";
 
 const List: React.FC<CProps> = ({ global, costs }) => {
     if (!costs) return <>Loading...</>;
 
-    const RenderAmountCell = ({ value }: GridRenderCellParams<any, string>) => {
+    const RenderAmountCell = ({ value, row }: GridRenderCellParams<any, string>) => {
         const currency = CurrencyList.get(global.currency, "en_US");
-        return <div>{value} {currency.symbol}</div>;
+        return <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <span style={{ marginTop: "-2%", color: row.positive ? "green" : "red", fontWeight: "200" }}>{row.positive ? "↑" : "↓"}</span>
+            <span>{value} {currency.symbol} </span>
+        </div>;
     };
 
     const RenderTimestampCell = ({ value }: GridRenderCellParams<any, string>) => <div>{dayjs(value).format("MM/DD/YYYY hh:mm")}</div>;
 
     const columns: GridColDef[] = [
-        { field: "title", headerName: "Title", flex: 1 },
+        { field: "title", headerName: "Title", flex: 5 },
         { field: "amount", headerName: "Amount", flex: 1, renderCell: RenderAmountCell },
-        { field: "type", headerName: "Type", flex: 1 },
-        { field: "timestamp", headerName: "Created", flex: 1, renderCell: RenderTimestampCell },
+        { field: "type", headerName: "Type", flex: 5 },
+        { field: "timestamp", headerName: "Created", flex: 5, renderCell: RenderTimestampCell },
     ];
 
     const styles = { border: "none", color: "white" };
@@ -52,6 +55,12 @@ const List: React.FC<CProps> = ({ global, costs }) => {
                     },
                     "& .MuiDataGrid-columnHeaders > div": {
                         backgroundColor: "#3A3A3A !important"
+                    },
+                    "& .MuiDataGrid-menuIcon": {
+                        display: "none"
+                    },
+                    "& .MuiDataGrid-iconButtonContainer": {
+                        marginLeft: "5px"
                     }
                 }}
             />
