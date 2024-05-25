@@ -61,8 +61,8 @@ const App: React.FC<CProps> = ({ global, setCosts, setGlobal }) => {
     useEffect(() => {
         invGetCosts()
             .then((response) => {
-                const list = JSON.parse(response);
-                setCosts(list.costs);
+                const costs = JSON.parse(response);
+                setCosts(costs);
                 loader.loadCosts();
             })
             .catch((error) => console.error(error));

@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import CurrencyList from "currency-list";
 import { connect } from "react-redux";
 import { setCosts, setGlobal } from "../store";
 import { CProps } from "../types";
+import { invSetCosts } from "../api";
 
-const List: React.FC<CProps> = ({ global, costs }) => {
+const List: React.FC<CProps> = ({ global, costs, setCosts }) => {
+
+    const [loading, setLoading] = useState<boolean>(false);
+
     if (!costs) return <>Loading...</>;
 
     const RenderAmountCell = ({ value, row }: GridRenderCellParams<any, string>) => {
@@ -19,14 +23,26 @@ const List: React.FC<CProps> = ({ global, costs }) => {
 
     const RenderTimestampCell = ({ value }: GridRenderCellParams<any, string>) => <div>{dayjs(value).format("MM/DD/YYYY hh:mm")}</div>;
 
+    const RenderActionsCell = ({ value }: GridRenderCellParams<any, string>) => <div><button disabled={loading} onClick={() => deleteRow(value)}>Delete</button></div>;
+
     const columns: GridColDef[] = [
         { field: "title", headerName: "Title", flex: 5 },
         { field: "amount", headerName: "Amount", flex: 1, renderCell: RenderAmountCell },
         { field: "type", headerName: "Type", flex: 5 },
         { field: "timestamp", headerName: "Created", flex: 5, renderCell: RenderTimestampCell },
+        { field: "id", headerName: "", flex: 1, renderCell: RenderActionsCell },
     ];
 
     const styles = { border: "none", color: "white" };
+
+    const deleteRow = (id: string | undefined) => {
+        setLoading(true);
+        const newList = costs.filter((cost) => cost.id !== id);
+        invSetCosts(newList).then(() => {
+            setLoading(false);
+            setCosts(newList);
+        });
+    };
 
     return (
         <div style={{ height: "calc(100vh - 80px)", width: "calc(100% - 30px)", padding: "0px 15px" }}>

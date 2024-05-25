@@ -126,7 +126,7 @@ header {
 }
 
 .custom-input {
-  width: 500px;
+  width: 478px;
   padding: 10px;
 }
 
@@ -137,4 +137,28 @@ header {
   width: 100%;
   align-items: center;
   justify-content: center;
+}
+
+.picker-class {
+  background-color: transparent !important;
+  width: 500px;
+}
+
+::-webkit-scrollbar {
+  height: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
 }
