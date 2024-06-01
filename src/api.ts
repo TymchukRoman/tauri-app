@@ -19,3 +19,5 @@ export const invSetGlobal = async (data: any) => {
 };
 
 export const invGetGlobal = async (): Promise<string> => invoke("load_data", { filePath: "data/global.txt" });
+
+export const invCreateBackup = async () => invoke("create_backup");
