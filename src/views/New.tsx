@@ -48,10 +48,10 @@ const New: React.FC<CProps> = ({ costs, setCosts }) => {
     const getFill = (activeState: boolean, color: string) => activeState ? color : "#0f0f0f98";
 
     return <div className="container">
-        <h1>New operation</h1>
         <form onSubmit={(e) => { e.preventDefault(); save(); }}                >
             <div style={{ width: "100%", display: "flex", alignItems: "center", gap: "10px", justifyContent: "space-evenly" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    <h1>New operation</h1>
                     <div style={{ display: "flex", width: "500px", justifyContent: "space-between" }}>
                         <button type="button" style={{ width: "240px", backgroundColor: getFill(positive, "green") }} onClick={() => setPositive(true)}>Income</button>
                         <button type="button" style={{ width: "240px", backgroundColor: getFill(!positive, "red") }} onClick={() => setPositive(false)}>Outcome</button>
