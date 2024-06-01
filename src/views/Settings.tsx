@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { invCreateBackup, invSetGlobal } from "../api";
+import { invCreateBackup, invResetData, invSetGlobal } from "../api";
 import CurrencyList from "currency-list";
 import { connect } from "react-redux";
-import { setCosts, setGlobal } from "../store";
+import { setCosts, setGlobal, resetGlobal } from "../store";
 import { CProps } from "../types";
 import { toast } from "react-toastify";
 
@@ -15,14 +15,24 @@ const currencies: any[] = Object.keys(allCurrencies).map((key: any) => {
     };
 });
 
-const createBackup = () => {
-    invCreateBackup()
-        .then(() => toast.success("Backup created"))
-        .catch(() => toast.error("Backup creation failed"));
-}
+const Settings: React.FC<CProps & { resetGlobal: () => void }> = ({ global, setGlobal, setCosts, resetGlobal }) => {
+    const [currency, setCurrency] = useState<string>(global.currency || "USD");
 
-const Settings: React.FC<CProps> = ({ global, setGlobal }) => {
-    const [currency, setCurrency] = useState<string>(global.currency);
+    const createBackup = () => {
+        invCreateBackup()
+            .then(() => toast.success("Backup created"))
+            .catch(() => toast.error("Backup creation failed"));
+    };
+
+    const resetData = () => {
+        invResetData()
+            .then(() => {
+                resetGlobal();
+                setCosts([]);
+                toast.success("Data reset succeed");
+            })
+            .catch(() => toast.error("Data reset failed"));
+    };
 
     useEffect(() => {
         currency && (currency !== global?.currency) && invSetGlobal({ ...global, currency })
@@ -43,6 +53,9 @@ const Settings: React.FC<CProps> = ({ global, setGlobal }) => {
         <div className="flex-row">
             <button style={{ width: "400px" }} onClick={createBackup}>Create data backup</button>
         </div>
+        <div className="flex-row">
+            <button style={{ width: "400px", backgroundColor: "darkred" }} onClick={resetData}>Reset data</button>
+        </div>
     </div>;
 };
 
@@ -51,4 +64,4 @@ const mapStateToProps = (state: any) => ({
     costs: state.costs
 });
 
-export default connect(mapStateToProps, { setCosts, setGlobal })(Settings);
+export default connect(mapStateToProps, { setCosts, setGlobal, resetGlobal })(Settings);

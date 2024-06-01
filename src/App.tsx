@@ -12,11 +12,7 @@ import GetStarted from "./views/GetStarted";
 import Home from "./views/Home";
 import { CProps } from "./types";
 
-const darkTheme = createTheme({
-    palette: {
-        mode: "dark",
-    },
-});
+const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 const Header: React.FC = () => <header>
     <Link className="sub-button" href="/home">
@@ -61,7 +57,7 @@ const App: React.FC<CProps> = ({ global, setCosts, setGlobal }) => {
     useEffect(() => {
         invGetCosts()
             .then((response) => {
-                const costs = JSON.parse(response);
+                const costs = response ? JSON.parse(response) : [];
                 setCosts(costs);
                 loader.loadCosts();
             })
@@ -69,7 +65,7 @@ const App: React.FC<CProps> = ({ global, setCosts, setGlobal }) => {
 
         invGetGlobal()
             .then((response) => {
-                const data = JSON.parse(response);
+                const data = response ? JSON.parse(response) : {};
                 setGlobal(data);
                 loader.loadGlobal();
             })
@@ -77,7 +73,7 @@ const App: React.FC<CProps> = ({ global, setCosts, setGlobal }) => {
     }, []);
 
     if (!loader.isLoaded()) return <>Loading...</>;
-    if (!global.name || !global.networth) return <GetStarted />;
+    if (!global.name || (!global.networth && global.networth !== 0)) return <GetStarted />;
 
     return <ThemeProvider theme={darkTheme}>
         <Header />

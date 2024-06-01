@@ -12,7 +12,8 @@ const globalSlice = createSlice({
         setGlobal: (state, action: PayloadAction<Record<string, any>>) => ({
             ...state,
             ...action.payload
-        })
+        }),
+        resetGlobal: () => ({})
     }
 });
 
@@ -34,4 +35,4 @@ export const store = configureStore({
 });
 
 export const { setCosts } = costsSlice.actions;
-export const { setGlobal } = globalSlice.actions;
+export const { setGlobal, resetGlobal } = globalSlice.actions;

@@ -6,6 +6,7 @@ import { setCosts, setGlobal } from "../store";
 import dayjs, { Dayjs } from "dayjs";
 import { CProps, Cost } from "../types";
 import { StaticDatePicker } from "@mui/x-date-pickers";
+import { toast } from "react-toastify";
 
 const New: React.FC<CProps> = ({ costs, setCosts }) => {
     const titleRef = useRef<HTMLInputElement>(null);
@@ -39,9 +40,9 @@ const New: React.FC<CProps> = ({ costs, setCosts }) => {
                     titleRef.current.value = "";
                     amountRef.current.value = "";
                     typeRef.current.value = "";
-                    setDate(dayjs());
                     setPositive(false);
                 }
+                toast.success("Created");
             });
     }
 
@@ -57,7 +58,7 @@ const New: React.FC<CProps> = ({ costs, setCosts }) => {
                         <button type="button" style={{ width: "240px", backgroundColor: getFill(!positive, "red") }} onClick={() => setPositive(false)}>Outcome</button>
                     </div>
                     <input className="custom-input" ref={titleRef} placeholder="title" />
-                    <input className="custom-input" ref={amountRef} placeholder="amount" type="number" />
+                    <input className="custom-input" ref={amountRef} placeholder="amount" type="number" step="0.01" />
                     <input className="custom-input" ref={typeRef} placeholder="type" />
                     <button type="submit" style={{ marginTop: "10px", width: "500px" }}>Save</button>
                 </div>

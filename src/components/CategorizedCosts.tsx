@@ -1,5 +1,4 @@
 import React from "react";
-import dayjs from "dayjs";
 import { Cost } from "../types";
 import { PieChart } from "@mui/x-charts";
 
@@ -14,15 +13,17 @@ const SLICE = 10;
 const CategorizedCosts: React.FC<CategorizedCostsProps> = ({ costs, currency, positive }) => {
 
     const groupedByType = costs
-        .filter((item: Cost) => (!positive ? !item.positive : item.positive) && dayjs(item.timestamp).isAfter(dayjs().subtract(1, "month")))
+        .filter((item: Cost) => !positive ? !item.positive : item.positive)
         .reduce((acc: Record<string, number>, item: Cost) => ({ ...acc, [item.type]: (acc[item.type] || 0) + item.amount }), {});
 
     const fullChartData = Object.keys(groupedByType)
         .map((key: string) => ({
-                value: groupedByType[key],
-                label: key
-            }))
+            value: groupedByType[key],
+            label: key
+        }))
         .sort((a, b) => b.value - a.value);
+
+    if (!fullChartData.length) return null;
 
     const list = fullChartData.slice(0, SLICE);
     const others = fullChartData.slice(SLICE);
@@ -54,9 +55,9 @@ const CategorizedCosts: React.FC<CategorizedCostsProps> = ({ costs, currency, po
                 <h1>All time {positive ? "incomes" : "costs"}</h1>
                 <div style={{ width: 800, height: 360, display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px", padding: "20px 0px", overflowY: "scroll" }}>
                     {fullChartData.map((item) => <div key={item.label} style={{ display: "flex", gap: "5px", justifyContent: "center", fontSize: calculateFontSize(item.value) }}>
-                            <span>{item.label} : {item.value} {currency?.symbol} </span>
-                            <span style={{ marginTop: "-2px", color: positive ? "green" : "red", fontWeight: "200" }}>{positive ? "↑" : "↓"}</span>
-                        </div>)}
+                        <span>{item.label} : {item.value.toFixed(2)} {currency?.symbol} </span>
+                        <span style={{ marginTop: "-2px", color: positive ? "green" : "red", fontWeight: "200" }}>{positive ? "↑" : "↓"}</span>
+                    </div>)}
                 </div>
             </div>
             {positive && <div style={{ width: "50%" }}>

@@ -28,6 +28,12 @@ fn save_data(file_path: String, data: String) -> Result<(), String> {
 fn load_data(file_path: String) -> Result<String, String> {
     let app_dir = tauri::api::path::data_dir().ok_or("Could not find the data directory")?;
     let file_path = app_dir.join(PATH).join(file_path);
+    if !file_path.exists() {
+        if let Some(parent) = file_path.parent() {
+            std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+        }
+        std::fs::write(&file_path, "").map_err(|e| e.to_string())?;
+    }
     std::fs::read_to_string(file_path).map_err(|e| e.to_string())
 }
 
@@ -58,13 +64,27 @@ fn create_backup() -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command]
+fn reset_data() -> Result<(), String> {
+    let app_dir = tauri::api::path::data_dir().ok_or("Could not find the data directory")?;
+    let app_data_dir = app_dir.join(PATH).join("data");
+
+    if app_data_dir.exists() {
+        fs::remove_dir_all(&app_data_dir).map_err(|e| e.to_string())?;
+        fs::create_dir_all(&app_data_dir).map_err(|e| e.to_string())?;
+    }
+
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             greet,
             save_data,
             load_data,
-            create_backup
+            create_backup,
+            reset_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

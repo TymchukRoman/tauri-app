@@ -14,7 +14,7 @@ const List: React.FC<CProps> = ({ global, costs, setCosts }) => {
     if (!costs) return <>Loading...</>;
 
     const RenderAmountCell = ({ value, row }: GridRenderCellParams<any, string>) => {
-        const currency = CurrencyList.get(global.currency, "en_US");
+        const currency = CurrencyList.get(global.currency || "USD", "en_US");
         return <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <span style={{ marginTop: "-2%", color: row.positive ? "green" : "red", fontWeight: "200" }}>{row.positive ? "↑" : "↓"}</span>
             <span>{value} {currency.symbol} </span>
@@ -53,7 +53,7 @@ const List: React.FC<CProps> = ({ global, costs, setCosts }) => {
                 rows={costs}
                 style={styles}
                 columns={columns}
-                hideFooter={true}
+                // hideFooter={true}
                 sx={{
                     "& .MuiDataGrid-columnHeaders": {
                         background: "none",

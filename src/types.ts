@@ -8,9 +8,9 @@ export interface Cost {
 }
 
 export interface Global {
-    name: string;
-    networth: number;
-    currency: string;
+    name?: string;
+    networth?: number;
+    currency?: string;
 }
 
 export interface CProps {
